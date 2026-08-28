@@ -8,6 +8,13 @@ function App() {
   const [loading, setLoading] = useState <boolean>(true);
   const [error, setError] = useState <string | null>(null);
 
+  //
+  const [nuevaArea, setNuevaArea] = useState({
+    nombre: "",
+    color: "",
+    avatar_tipo: "",
+  });
+
   useEffect(() => {
     async function cargarDatos() {
       try {
@@ -45,8 +52,19 @@ function App() {
         </ul>
       </div>
     )}
+    <input
+      type="text"
+      value={nuevaArea.nombre}
+      onChange={(e) => setNuevaArea({ ...nuevaArea, nombre: e.target.value })}
+    />
+    <input
+      type="color"
+      value={nuevaArea.color}
+      onChange={(e) => setNuevaArea({ ...nuevaArea, color: e.target.value })}
+    />
   </div>
 );
 }
 
 export default App;
+
