@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import {Area,getAreas} from './db.ts'; 
+import {Area,getAreas, createArea} from './db.ts'; 
 import './App.css';
-
 
 function App() {
   const [areas, setAreas] = useState<Area[]>([]);
@@ -35,6 +34,22 @@ function App() {
     }
     cargarDatos();
   }, []);
+  // funcion handle para crear una nueva area
+  async function handleCrearArea(nombre: string, color: string, avatar_tipo: string){
+      try {
+        await createArea(nombre, color, avatar_tipo);
+        const result = await getAreas();//refetch despues de mutacion
+        setAreas(result);
+        setNuevaArea({nombre: "", color: "", avatar_tipo: ""});//limpiamos input
+      } catch (e) {
+        if(e instanceof Error){ //type guard, vereficamos que lo que nos boto si es un error
+          setError(e.message);
+        }
+        else{
+          setError("Error desconocido");
+        }
+      }
+  }
 
   return (
   <div>
@@ -62,6 +77,14 @@ function App() {
       value={nuevaArea.color}
       onChange={(e) => setNuevaArea({ ...nuevaArea, color: e.target.value })}
     />
+    <input
+      type="text"
+      value={nuevaArea.avatar_tipo}
+      onChange={(e) => setNuevaArea({ ...nuevaArea, avatar_tipo: e.target.value })}
+    />
+    <button onClick={()=>handleCrearArea(nuevaArea.nombre, nuevaArea.color, nuevaArea.avatar_tipo)}>
+      crear area
+    </button>
   </div>
 );
 }
