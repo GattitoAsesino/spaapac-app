@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Area,getAreas, createArea} from './db.ts'; 
+import {Area,getAreas, createArea, deleteArea} from './db.ts'; 
 import './App.css';
 
 function App() {
@@ -41,6 +41,22 @@ function App() {
         const result = await getAreas();//refetch despues de mutacion
         setAreas(result);
         setNuevaArea({nombre: "", color: "", avatar_tipo: ""});//limpiamos input
+      } catch (e) {
+        if(e instanceof Error){ //type guard, vereficamos que lo que nos boto si es un error
+          setError(e.message);
+        }
+        else{
+          setError("Error desconocido");
+        }
+      }
+  }
+  //handle borrar area
+  async function handleBorrarArea(id: number){
+      try {
+        await deleteArea(id);
+        const result = await getAreas();//refetch despues de mutacion
+        setAreas(result);
+        
       } catch (e) {
         if(e instanceof Error){ //type guard, vereficamos que lo que nos boto si es un error
           setError(e.message);
