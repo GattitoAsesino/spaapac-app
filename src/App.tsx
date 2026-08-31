@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import {Area,getAreas, createArea, deleteArea} from './db.ts'; 
+import {Area,getAreas, createArea, deleteArea, updateArea} from './db.ts'; 
 import './App.css';
 
 function App() {
   const [areas, setAreas] = useState<Area[]>([]);
   const [loading, setLoading] = useState <boolean>(true);
   const [error, setError] = useState <string | null>(null);
+  const [editandoNombreId, setEditandoNombreId] = useState <number|null>(null);
+  const [editandoColorId, setEditandoColorId] = useState <number|null>(null);
+  const [nombreEditado, setNombreEditado] = useState<string>("");
 
   //
   const [nuevaArea, setNuevaArea] = useState({
@@ -13,6 +16,7 @@ function App() {
     color: "",
     avatar_tipo: "",
   });
+  
 
   useEffect(() => {
     async function cargarDatos() {
@@ -66,6 +70,23 @@ function App() {
         }
       }
   }
+  //handle actualizar
+  async function handleActualizarArea(id: number, nombre: string, color: string){
+    try {
+        
+        await updateArea(id, nombre, color);
+        const result = await getAreas();
+        setAreas(result);
+        
+      } catch (e) {
+        if(e instanceof Error){ //type guard, vereficamos que lo que nos boto si es un error
+          setError(e.message);
+        }
+        else{
+          setError("Error desconocido");
+        }
+      }
+  }
 
   return (
   <div>
@@ -78,7 +99,37 @@ function App() {
         <p>Áreas en DB: {areas.length}</p>
         <ul>
           {areas.map((area) => (
-            <li key={area.id}>{area.nombre}</li>
+            <li key={area.id}>
+            {area.id === editandoNombreId ? (
+              <>
+                <input
+                  type="text"
+                  value={nombreEditado}
+                  onChange={(e) => setNombreEditado(e.target.value)}
+                />
+                <button onClick={() => {
+                  handleActualizarArea(area.id, nombreEditado, area.color);
+                  setEditandoNombreId(null);
+                }}>
+                  guardar
+                </button>
+              </>
+            ) : (
+              <>
+                {area.nombre}
+                <button onClick={() => {
+                  setEditandoNombreId(area.id);
+                  setNombreEditado(area.nombre);
+                }}>
+                  editar
+                </button>
+              </>
+            )}
+
+            <button onClick={() => handleBorrarArea(area.id)}>
+              borrar
+            </button>
+          </li>
           ))}
         </ul>
       </div>

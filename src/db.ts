@@ -35,11 +35,11 @@ export async function createArea(nombre: string, color: string, avatar_tipo: str
          [nombre, color, avatar_tipo]);
 }
 //actualizar areas
-export async function updateArea(id: number, nombre: string, color:string, avatar_tipo:string){
+export async function updateArea(id: number, nombre: string, color:string){
     const db = await getDb();
     await db.execute(
-        'UPDATE areas SET nombre=$2, color=$3, avatar_tipo=$4 WHERE id= $1',
-         [id, nombre, color, avatar_tipo]);
+        'UPDATE areas SET nombre=$2, color=$3 WHERE id= $1',
+         [id, nombre, color]);
 }
 //borrar areas
 export async function deleteArea(id: number){
