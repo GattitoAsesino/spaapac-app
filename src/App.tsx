@@ -9,6 +9,7 @@ function App() {
   const [editandoNombreId, setEditandoNombreId] = useState <number|null>(null);
   const [editandoColorId, setEditandoColorId] = useState <number|null>(null);
   const [nombreEditado, setNombreEditado] = useState<string>("");
+  const [colorEditando, setColorEditando] = useState<string>("");
 
   //
   const [nuevaArea, setNuevaArea] = useState({
@@ -125,6 +126,32 @@ function App() {
                 </button>
               </>
             )}
+            {
+              area.id == editandoColorId ? (
+                <>
+                <input
+                  type="color"
+                  value={colorEditando}
+                  onChange={(e) => setColorEditando(e.target.value)}
+                />
+                <button onClick={() => {
+                  handleActualizarArea(area.id, area.nombre, colorEditando);
+                  setEditandoColorId(null);
+                }}>
+                  guardar
+                </button>
+              </>
+              ) : (
+                <>
+                <button onClick={() => {
+                  setEditandoColorId(area.id);
+                  setColorEditando(area.color);
+                }}>
+                  editar color
+                </button>
+              </>
+              )
+            }
 
             <button onClick={() => handleBorrarArea(area.id)}>
               borrar
