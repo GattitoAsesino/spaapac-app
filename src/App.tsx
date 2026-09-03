@@ -11,6 +11,10 @@ function App() {
   const [nombreEditado, setNombreEditado] = useState<string>("");
   const [colorEditando, setColorEditando] = useState<string>("");
 
+  //vistas
+  type Vista = 'inicio' | 'area';
+  const [vista, setVista] = useState <Vista> ('inicio');
+  const [areaIdSeleccionada, setAreaIdSeleccionada] = useState <number | null>(null);
   //
   const [nuevaArea, setNuevaArea] = useState({
     nombre: "",
@@ -88,97 +92,116 @@ function App() {
         }
       }
   }
-
-  return (
-  <div>
-    {loading && <p>Cargando áreas...</p>}
-    
-    {error && <p>Error: {error}</p>}
-    
-    {!loading && !error && (
+  function renderizarVista() {
+  switch (vista) {
+    case 'inicio':
+      return (
       <div>
-        <p>Áreas en DB: {areas.length}</p>
-        <ul>
-          {areas.map((area) => (
-            <li key={area.id}>
-            {area.id === editandoNombreId ? (
-              <>
-                <input
-                  type="text"
-                  value={nombreEditado}
-                  onChange={(e) => setNombreEditado(e.target.value)}
-                />
-                <button onClick={() => {
-                  handleActualizarArea(area.id, nombreEditado, area.color);
-                  setEditandoNombreId(null);
-                }}>
-                  guardar
-                </button>
-              </>
-            ) : (
-              <>
-                {area.nombre}
-                <button onClick={() => {
-                  setEditandoNombreId(area.id);
-                  setNombreEditado(area.nombre);
-                }}>
-                  editar
-                </button>
-              </>
-            )}
-            {
-              area.id == editandoColorId ? (
-                <>
-                <input
-                  type="color"
-                  value={colorEditando}
-                  onChange={(e) => setColorEditando(e.target.value)}
-                />
-                <button onClick={() => {
-                  handleActualizarArea(area.id, area.nombre, colorEditando);
-                  setEditandoColorId(null);
-                }}>
-                  guardar
-                </button>
-              </>
-              ) : (
-                <>
-                <button onClick={() => {
-                  setEditandoColorId(area.id);
-                  setColorEditando(area.color);
-                }}>
-                  editar color
-                </button>
-              </>
-              )
-            }
+        {loading && <p>Cargando áreas...</p>}
+        
+        {error && <p>Error: {error}</p>}
+        
+        {!loading && !error && (
+          <div>
+            <p>Áreas en DB: {areas.length}</p>
+            <ul>
+              {areas.map((area) => (
+                <li key={area.id}>
+                {area.id === editandoNombreId ? (
+                  <>
+                    <input
+                      type="text"
+                      value={nombreEditado}
+                      onChange={(e) => setNombreEditado(e.target.value)}
+                    />
+                    <button onClick={() => {
+                      handleActualizarArea(area.id, nombreEditado, area.color);
+                      setEditandoNombreId(null);
+                    }}>
+                      guardar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {area.nombre}
+                    <button onClick={() => {
+                      setEditandoNombreId(area.id);
+                      setNombreEditado(area.nombre);
+                    }}>
+                      editar
+                    </button>
+                  </>
+                )}
+                {
+                  area.id == editandoColorId ? (
+                    <>
+                    <input
+                      type="color"
+                      value={colorEditando}
+                      onChange={(e) => setColorEditando(e.target.value)}
+                    />
+                    <button onClick={() => {
+                      handleActualizarArea(area.id, area.nombre, colorEditando);
+                      setEditandoColorId(null);
+                    }}>
+                      guardar
+                    </button>
+                  </>
+                  ) : (
+                    <>
+                    <button onClick={() => {
+                      setEditandoColorId(area.id);
+                      setColorEditando(area.color);
+                    }}>
+                      editar color
+                    </button>
+                  </>
+                  )
+                }
 
-            <button onClick={() => handleBorrarArea(area.id)}>
-              borrar
-            </button>
-          </li>
-          ))}
-        </ul>
+                <button onClick={() => handleBorrarArea(area.id)}>
+                  borrar
+                </button>
+              </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <input
+          type="text"
+          value={nuevaArea.nombre}
+          onChange={(e) => setNuevaArea({ ...nuevaArea, nombre: e.target.value })}
+        />
+        <input
+          type="color"
+          value={nuevaArea.color}
+          onChange={(e) => setNuevaArea({ ...nuevaArea, color: e.target.value })}
+        />
+        <input
+          type="text"
+          value={nuevaArea.avatar_tipo}
+          onChange={(e) => setNuevaArea({ ...nuevaArea, avatar_tipo: e.target.value })}
+        />
+        <button onClick={()=>handleCrearArea(nuevaArea.nombre, nuevaArea.color, nuevaArea.avatar_tipo)}>
+          crear area
+        </button>
       </div>
-    )}
-    <input
-      type="text"
-      value={nuevaArea.nombre}
-      onChange={(e) => setNuevaArea({ ...nuevaArea, nombre: e.target.value })}
-    />
-    <input
-      type="color"
-      value={nuevaArea.color}
-      onChange={(e) => setNuevaArea({ ...nuevaArea, color: e.target.value })}
-    />
-    <input
-      type="text"
-      value={nuevaArea.avatar_tipo}
-      onChange={(e) => setNuevaArea({ ...nuevaArea, avatar_tipo: e.target.value })}
-    />
-    <button onClick={()=>handleCrearArea(nuevaArea.nombre, nuevaArea.color, nuevaArea.avatar_tipo)}>
-      crear area
-    </button>
+    );
+    case 'area':
+      return (
+        <div>
+          <p>Vista de detalle del área {areaIdSeleccionada}</p>
+          <button onClick={() => setVista('inicio')}>volver</button>
+        </div>
+      );
+    default:
+      return null;
+  }
+}
+
+return (
+  <div>
+    {renderizarVista()}
   </div>
 );
 }
