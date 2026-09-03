@@ -158,6 +158,12 @@ function App() {
                   </>
                   )
                 }
+                <button onClick={() =>{ // seleccionar area temporal 
+                  setAreaIdSeleccionada(area.id);
+                  setVista('area');
+                }}>
+                  seleccionar
+                </button>
 
                 <button onClick={() => handleBorrarArea(area.id)}>
                   borrar
