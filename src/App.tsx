@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Area,getAreas, createArea, deleteArea, updateArea} from './db.ts'; 
+import {Area,getAreas, createArea, deleteArea, updateArea} from './db/areas.ts'; 
 import './App.css';
 
 function App() {

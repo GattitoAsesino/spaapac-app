@@ -1,15 +1,5 @@
-import Database from '@tauri-apps/plugin-sql';
-
-//para recordar si hemos abierto la conexion antes
-let dbInstance: Database | null = null;
-
-//patron singleton para abrir la conexion a la base de datos
- async function getDb(){
-    if (!dbInstance) {
-        dbInstance = await Database.load('sqlite:areas.db');
-    }
-    return dbInstance;  
- }
+ import {getDb} from './connection.ts'
+ 
  //definimos la forma de los datos
  export type Area = {
    id: number;
